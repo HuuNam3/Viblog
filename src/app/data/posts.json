@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "Getting Started with Next.js",
+    "excerpt": "Learn the basics of Next.js and how to build your first application.",
+    "date": "April 5, 2025",
+    "author": "Jane Smith",
+    "image": "/placeholder.svg?height=600&width=1200",
+    "content": "Next.js is a powerful React framework that makes building web applications simple and efficient. In this post, we'll cover the fundamentals and build a simple application from scratch.\n\nNext.js provides features like server-side rendering, static site generation, and API routes out of the box. This makes it an excellent choice for building modern web applications.\n\nTo get started with Next.js, you'll need to have Node.js installed on your machine. Then, you can create a new Next.js project using the following command:\n\n```\nnpx create-next-app my-next-app\n```\n\nThis will set up a new Next.js project with all the necessary configurations. You can then start the development server by running:\n\n```\ncd my-next-app\nnpm run dev\n```\n\nYour Next.js application will be running at http://localhost:3000. From here, you can start building your application by creating pages in the `pages` directory or `app` directory if you're using the App Router."
+  },
+  {
+    "id": 2,
+    "title": "Understanding Server Components",
+    "excerpt": "Dive deep into React Server Components and their benefits.",
+    "date": "April 2, 2025",
+    "author": "John Doe",
+    "image": "/placeholder.svg?height=600&width=1200",
+    "content": "Server Components represent a paradigm shift in how we build React applications. They allow you to render components on the server, reducing the JavaScript sent to the client and improving performance.\n\nWith Server Components, you can keep large dependencies, access server-only data sources, and keep sensitive information on the server. This can lead to smaller bundle sizes and faster page loads.\n\nIn Next.js 13 and later, Server Components are the default. This means that components in your `app` directory are Server Components by default, unless you explicitly mark them as Client Components using the 'use client' directive.\n\nServer Components can't use hooks like useState or useEffect, as they don't have access to browser APIs. For interactive components, you'll need to use Client Components.\n\nThe beauty of Next.js is that you can mix and match Server and Client Components in the same application, using each where they make the most sense."
+  },
+  {
+    "id": 3,
+    "title": "Building Interactive UIs with Client Components",
+    "excerpt": "Learn when and how to use Client Components for interactivity.",
+    "date": "March 28, 2025",
+    "author": "Alex Johnson",
+    "image": "/placeholder.svg?height=600&width=1200",
+    "content": "While Server Components are great for static content, Client Components shine when you need interactivity. This post explores the best practices for combining both approaches in your Next.js application.\n\nClient Components are React components that are rendered on the client. They have access to browser APIs, can use hooks like useState and useEffect, and can respond to user events.\n\nTo mark a component as a Client Component in Next.js, you need to add the 'use client' directive at the top of your file:\n\n```tsx\n'use client'\n\nimport { useState } from 'react'\n\nexport default function Counter() {\n  const [count, setCount] = useState(0)\n  \n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n    </div>\n  )\n}\n```\n\nA good pattern is to keep your Client Components as small as possible, focusing only on the interactive parts of your UI. This allows you to take advantage of Server Components for the rest of your application."
+  },
+  {
+    "id": 4,
+    "title": "Styling in Next.js Applications",
+    "excerpt": "Explore different styling approaches in Next.js.",
+    "date": "March 20, 2025",
+    "author": "Sam Taylor",
+    "image": "/placeholder.svg?height=600&width=1200",
+    "content": "From CSS Modules to Tailwind CSS, Next.js supports various styling approaches. We'll compare them and help you choose the right one for your project.\n\nCSS Modules: Next.js has built-in support for CSS Modules. This approach allows you to scope CSS to a specific component, avoiding class name collisions. To use CSS Modules, create a file with the `.module.css` extension and import it in your component.\n\nGlobal CSS: You can also use global CSS by importing a CSS file in your `_app.js` or `layout.js` file. This is useful for site-wide styles.\n\nTailwind CSS: Next.js works great with Tailwind CSS, a utility-first CSS framework. You can set up Tailwind CSS in your Next.js project by following the official documentation.\n\nCSS-in-JS: Libraries like styled-components and emotion are also popular choices for styling Next.js applications. These allow you to write CSS directly in your JavaScript files.\n\nEach approach has its pros and cons, and the best choice depends on your project requirements and team preferences."
+  },
+  {
+    "id": 5,
+    "title": "Data Fetching in Next.js",
+    "excerpt": "Learn about the different data fetching strategies in Next.js.",
+    "date": "March 15, 2025",
+    "author": "Robin Chen",
+    "image": "/placeholder.svg?height=600&width=1200",
+    "content": "Next.js provides several ways to fetch data for your application. In this post, we'll explore the different data fetching strategies and when to use each one.\n\nServer Components: With React Server Components, you can fetch data directly in your component using async/await. This is a powerful pattern that allows you to keep your data fetching close to where the data is used.\n\n```tsx\nasync function PostList() {\n  const posts = await getPosts()\n  return (\n    <ul>\n      {posts.map((post) => (\n        <li key={post.id}>{post.title}</li>\n      ))}\n    </ul>\n  )\n}\n```\n\nRoute Handlers: Next.js also provides API Routes (in the pages directory) and Route Handlers (in the app directory) for creating API endpoints. These can be used to fetch data from external APIs or databases.\n\nServer Actions: For mutating data, you can use Server Actions, which allow you to define server-side functions that can be called from the client.\n\nChoosing the right data fetching strategy depends on your specific use case, including factors like whether the data needs to be fresh on every request, can be cached, or requires authentication."
+  }
+]
