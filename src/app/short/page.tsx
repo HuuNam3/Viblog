@@ -1,13 +1,17 @@
+import VideoFeed from "./video-feed"
 import type React from "react"
 import Link from "next/link"
 import { Sparkles } from "lucide-react"
-import Header from "./header"
+import Header from "../posts/header"
 
-export default function PostsLayout({ children }: { children: React.ReactNode }) {
+export default function Short() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-purple-50/50">
       <Header/>
-      <main className="flex-1">{children}</main>
+      
+      <main className="flex-1">
+        <VideoFeed/>
+      </main>
 
       <footer className="border-t py-8 bg-gradient-to-br from-purple-900 to-indigo-900 text-white">
         <div className="container mx-auto px-4">

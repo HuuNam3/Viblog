@@ -13,7 +13,7 @@ export default function PostNotFound() {
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">
-            The post you&apos;re looking for doesn&apos;t exist or has been removed.
+            The post you're looking for doesn't exist or has been removed.
           </p>
         </CardContent>
         <CardFooter className="flex justify-center gap-4">

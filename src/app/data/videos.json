@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "videoUrl": "/placeholder.svg?height=720&width=405",
+        "username": "@vercel",
+        "caption": "Check out this amazing Next.js tutorial! #coding #webdev #nextjs",
+        "likes": "127.8K",
+        "userAvatar": "/placeholder.svg?height=50&width=50"
+    },
+    {
+        "id": 2,
+        "videoUrl": "/placeholder.svg?height=720&width=405",
+        "username": "@tailwindcss",
+        "caption": "Styling made simple with Tailwind CSS #tailwind #css #design",
+        "likes": "98.2K",
+        "userAvatar": "/placeholder.svg?height=50&width=50"
+    },
+    {
+        "id": 3,
+        "videoUrl": "/placeholder.svg?height=720&width=405",
+        "username": "@reactjs",
+        "caption": "Building interactive UIs has never been easier #react #javascript #frontend",
+        "likes": "156.4K",
+        "userAvatar": "/placeholder.svg?height=50&width=50"
+    }
+]

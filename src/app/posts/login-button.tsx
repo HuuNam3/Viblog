@@ -2,58 +2,127 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { LogIn, LogOut } from "lucide-react"
+import { LogIn, LogOut, User } from "lucide-react"
 import { useRouter } from "next/navigation"
-// import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast"
+import Link from "next/link"
+
+interface UserData {
+  id: number
+  username: string
+  name: string
+  email: string
+  role: string
+}
 
 export default function LoginButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-//   const { toast } = useToast()
+  const { toast } = useToast()
 
   // Check login status on component mount
   useEffect(() => {
-    const loginStatus = document.cookie.includes("isLoggedIn=true")
-    setIsLoggedIn(loginStatus)
+    async function checkLoginStatus() {
+      try {
+        const response = await fetch("/api/auth/me")
+        if (response.ok) {
+          const data = await response.json()
+          setIsLoggedIn(true)
+          setUserData(data.user)
+        } else {
+          setIsLoggedIn(false)
+          setUserData(null)
+        }
+      } catch (error) {
+        console.error("Error checking login status:", error)
+        setIsLoggedIn(false)
+        setUserData(null)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkLoginStatus()
   }, [])
 
-  const handleLogin = () => {
-    // Set a cookie to simulate login (expires in 1 hour)
-    document.cookie = "isLoggedIn=true; path=/; max-age=3600"
-    setIsLoggedIn(true)
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      })
 
-    // toast({
-    //   title: "Logged in successfully",
-    //   description: "You now have access to create new posts.",
-    // })
+      if (response.ok) {
+        setIsLoggedIn(false)
+        setUserData(null)
 
-    // Refresh the page to update the UI
-    router.refresh()
+        toast({
+          title: "Logged out successfully",
+          description: "You have been logged out of your account.",
+        })
+
+        // Refresh the page to update the UI
+        router.refresh()
+      } else {
+        toast({
+          title: "Logout failed",
+          description: "There was an error logging out. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Logout error:", error)
+      toast({
+        title: "Logout failed",
+        description: "There was an error logging out. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleLogout = () => {
-    // Remove the cookie to simulate logout
-    document.cookie = "isLoggedIn=; path=/; max-age=0"
-    setIsLoggedIn(false)
-
-    // toast({
-    //   title: "Logged out successfully",
-    //   description: "You have been logged out of your account.",
-    // })
-
-    // Refresh the page to update the UI
-    router.refresh()
+  if (isLoading) {
+    return (
+      <Button variant="ghost" size="sm" disabled className="opacity-50">
+        <User className="h-4 w-4 mr-2" />
+        <span>Loading...</span>
+      </Button>
+    )
   }
 
-  return isLoggedIn ? (
-    <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2">
-      <LogOut className="h-4 w-4" />
-      <span>Logout</span>
-    </Button>
-  ) : (
-    <Button variant="default" size="sm" onClick={handleLogin} className="flex items-center gap-2">
-      <LogIn className="h-4 w-4" />
-      <span>Login</span>
+  if (isLoggedIn && userData) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2 text-sm text-gray-700 bg-purple-50 px-3 py-1 rounded-full">
+          <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-xs font-bold">
+            {userData.name.charAt(0)}
+          </div>
+          <span>{userData.name}</span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleLogout}
+          className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <Button
+      variant="default"
+      size="sm"
+      asChild
+      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+    >
+      <Link href="/login">
+        <LogIn className="h-4 w-4" />
+        <span>Login</span>
+      </Link>
     </Button>
   )
 }

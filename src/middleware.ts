@@ -9,15 +9,15 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = path === "/posts/new"
 
   // Get the authentication status from the cookie
-  const isLoggedIn = request.cookies.has("isLoggedIn")
+  const isLoggedIn = request.cookies.has("sessionId")
 
   // If the route is protected and the user is not logged in, redirect to the login page
   if (isProtectedRoute && !isLoggedIn) {
-    // Create the URL for the posts page with a login required message
-    const url = new URL("/posts", request.url)
-    url.searchParams.set("loginRequired", "true")
+    // Create the URL for the login page with a callback URL
+    const url = new URL("/login", request.url)
+    url.searchParams.set("callbackUrl", path)
 
-    // Redirect to the posts page with the message
+    // Redirect to the login page
     return NextResponse.redirect(url)
   }
 

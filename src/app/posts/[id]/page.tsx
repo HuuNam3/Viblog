@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Calendar, User } from "lucide-react"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import LikeButton from "../like-button"
@@ -41,6 +41,27 @@ export async function generateStaticParams() {
   }))
 }
 
+// Function to get a random category for each post (for demo purposes)
+function getRandomCategory(postId: number) {
+  const categories = [
+    { name: "Web Development", color: "bg-pink-100 text-pink-800 border-pink-200" },
+    { name: "Programming", color: "bg-blue-100 text-blue-800 border-blue-200" },
+    { name: "Design", color: "bg-amber-100 text-amber-800 border-amber-200" },
+    { name: "Technology", color: "bg-green-100 text-green-800 border-green-200" },
+    { name: "Tutorial", color: "bg-purple-100 text-purple-800 border-purple-200" },
+  ]
+
+  // Use the post ID to deterministically select a category
+  return categories[postId % categories.length]
+}
+
+// Function to estimate reading time
+function getReadingTime(content: string): number {
+  const wordsPerMinute = 200
+  const wordCount = content.split(/\s+/).length
+  return Math.ceil(wordCount / wordsPerMinute)
+}
+
 interface PostPageProps {
   params: {
     id: string
@@ -58,60 +79,77 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound()
   }
 
+  // Get category and reading time
+  const category = getRandomCategory(post.id)
+  const readingTime = getReadingTime(post.content)
+
   // Format the content with paragraphs
   const formattedContent = post.content.split("\n\n").map((paragraph, index) => (
-    <p key={index} className="mb-4">
+    <p key={index} className="mb-6 leading-relaxed text-gray-700">
       {paragraph}
     </p>
   ))
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Button variant="ghost" size="sm" asChild className="mb-6">
+      <Button variant="ghost" size="sm" asChild className="mb-6 hover:bg-purple-50 hover:text-purple-700">
         <Link href="/posts" className="flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Posts</span>
         </Link>
       </Button>
 
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="text-3xl">{post.title}</CardTitle>
-              <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{post.date}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  <span>{post.author}</span>
-                </div>
-              </div>
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 text-center">
+          <div className="flex justify-center gap-2 mb-4">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${category.color}`}>
+              {category.name}
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
+          <p className="text-xl text-gray-600 mb-6">{post.excerpt}</p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-4 w-4" />
+              <span>{post.date}</span>
             </div>
-            <LikeButton postId={post.id} />
+            <div className="flex items-center gap-1">
+              <User className="h-4 w-4" />
+              <span>{post.author}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              <span>{readingTime} min read</span>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Featured Image */}
-          <div className="relative w-full h-[400px] overflow-hidden rounded-lg">
-            <Image
-              src={post.image || "/placeholder.svg"}
-              alt={`Featured image for ${post.title}`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority
-              className="object-cover"
-            />
-          </div>
+        </div>
 
-          <div className="prose max-w-none">{formattedContent}</div>
-        </CardContent>
-        <CardFooter className="flex justify-between border-t pt-6">
-          <span className="text-sm text-muted-foreground">Post #{post.id}</span>
-        </CardFooter>
-      </Card>
+        {/* Featured Image */}
+        <div className="relative w-full h-[400px] overflow-hidden rounded-xl shadow-lg mb-8">
+          <Image
+            src={post.image || "/placeholder.svg"}
+            alt={`Featured image for ${post.title}`}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority
+            className="object-cover"
+          />
+        </div>
+
+        <Card className="border-none shadow-lg overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+          <CardContent className="p-8">
+            <div className="prose max-w-none">{formattedContent}</div>
+          </CardContent>
+          <CardFooter className="flex justify-between border-t py-6 bg-gray-50">
+            <span className="text-sm text-gray-500">Post #{post.id}</span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500">Like this post?</span>
+              <LikeButton postId={post.id} />
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }
