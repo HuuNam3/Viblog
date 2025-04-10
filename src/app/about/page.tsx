@@ -1,18 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import BackButton from "@/components/common/BackButton"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+
 
 export default function AboutUs() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
       <div className="mb-8">
-        <Link href="/">
-          <Button variant="ghost" className="flex cursor-pointer items-center gap-2 pl-0 hover:pl-1 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
-        </Link>
+        <BackButton/>
       </div>
       <div className="space-y-12">
         {/* Header Section */}

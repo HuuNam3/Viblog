@@ -1,62 +1,16 @@
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import BackButton from "@/components/common/BackButton"
+import ContactForm from "./ContactForm"
 
 export default function ContactPage() {
   return (
     <div className="container mx-auto py-12 px-4 max-w-6xl">
-        <Link href="/">
-            <Button variant="ghost" className="flex cursor-pointer items-center gap-2 pl-0 hover:pl-1 transition-all">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
+      <BackButton />
       <h1 className="text-4xl font-bold text-center mb-12">Contact Us</h1>
 
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Contact Form */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">Send us a message</CardTitle>
-            <p className="text-muted-foreground mt-2">
-              Fill out the form below and we&apos;ll get back to you as soon as possible.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="font-medium">
-                  Name
-                </Label>
-                <Input id="name" placeholder="Your name" className="h-12" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="font-medium">
-                  Email
-                </Label>
-                <Input id="email" type="email" placeholder="your.email@example.com" className="h-12" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message" className="font-medium">
-                  Message
-                </Label>
-                <Textarea id="message" placeholder="How can we help you?" className="min-h-[150px] resize-none" />
-              </div>
-
-              <Button type="submit" className="w-full cursor-pointer h-12 text-base font-medium">
-                Send Message
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
+        <ContactForm />
         {/* Contact Information */}
         <div className="space-y-8">
           <Card className="shadow-lg">
@@ -71,11 +25,11 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-lg">Address</h3>
                   <address className="not-italic text-muted-foreground">
-                    123 Business Avenue
+                    123 An Duong Vuong Street
                     <br />
-                    Tech District
+                    Ward 3
                     <br />
-                    San Francisco, CA 94103
+                    District 5
                   </address>
                 </div>
               </div>
@@ -102,7 +56,7 @@ export default function ContactPage() {
                   <h3 className="font-semibold text-lg">Email</h3>
                   <p className="text-muted-foreground">
                     <a href="mailto:info@yourcompany.com" className="hover:text-primary transition-colors">
-                      info@yourcompany.com
+                      Namdaden@gmail.com
                     </a>
                   </p>
                 </div>
