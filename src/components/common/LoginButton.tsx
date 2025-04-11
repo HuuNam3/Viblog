@@ -55,8 +55,6 @@ export default function LoginButton() {
         setIsLoggedIn(false)
         setUserData(null)
 
-    
-
         // Refresh the page to update the UI
         router.refresh()
       } else {

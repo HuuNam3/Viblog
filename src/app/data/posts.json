@@ -56,7 +56,6 @@
     "excerpt": "Figma pro",
     "date": "April 11, 2025",
     "author": "Nam",
-    "authorId": 1,
     "image": "/placeholder.svg?height=600&width=1200",
     "content": "you should buy figma pro"
   },
@@ -64,10 +63,9 @@
     "id": 7,
     "title": "123",
     "excerpt": "123",
-    "date": "April 11, 2025",
-    "author": "Nam",
-    "authorId": 1,
     "image": "/placeholder.svg?height=600&width=1200",
-    "content": "123"
+    "content": "123",
+    "like": 0,
+    "author": "Nam"
   }
 ]

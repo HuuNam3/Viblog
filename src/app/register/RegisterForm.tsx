@@ -55,8 +55,6 @@ export default function RegisterForm() {
   
     const onSubmit = async (data: RegisterFormData) => {
       try {
-          const userName = data.username
-          const pass = data.password
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { confirmPassword, ...registerData } = data;
           const res = await createUser(registerData)
