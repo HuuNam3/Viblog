@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft, UserPlus, AlertCircle, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { createUser, hashPassword } from "../lib/auth"
+import { createUser, hashPassword } from "../../lib/auth"
 
 // Server action to handle registration
 async function register(formData: FormData) {

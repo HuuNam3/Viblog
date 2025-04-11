@@ -1,19 +1,10 @@
-import VideoFeed from "./video-feed"
-import type React from "react"
+import React from 'react'
 import Link from "next/link"
 import { Sparkles } from "lucide-react"
-import Header from "../../components/common/Header"
 
-export default function Short() {
+export default function Footer() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-purple-50/50">
-      <Header/>
-      
-      <main className="flex-1">
-        <VideoFeed/>
-      </main>
-
-      <footer className="border-t py-8 bg-gradient-to-br from-purple-900 to-indigo-900 text-white">
+    <footer className="border-t py-8 bg-gradient-to-br from-purple-900 to-indigo-900 text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
@@ -72,6 +63,5 @@ export default function Short() {
           </div>
         </div>
       </footer>
-    </div>
   )
 }

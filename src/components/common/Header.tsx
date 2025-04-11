@@ -2,7 +2,7 @@ import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Home, FileText, Info, Search, Sparkles,Film } from "lucide-react"
-import LoginButton from "./login-button"
+import LoginButton from "./LoginButton"
 
 export default function Header() {
   return (

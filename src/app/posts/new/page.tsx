@@ -8,7 +8,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import fs from "fs/promises"
 import path from "path"
-import { getCurrentUser, requireAuth } from "@/app/lib/auth"
+import { getCurrentUser, requireAuth } from "@/lib/auth"
 
 // Define the Post type
 interface Post {

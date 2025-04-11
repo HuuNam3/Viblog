@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft, LogIn, AlertCircle, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { findUserByUsernameOrEmail, verifyPassword, createSession } from "../lib/auth"
+import { findUserByUsernameOrEmail, verifyPassword, createSession } from "../../lib/auth"
 
 // Server action to handle login
 async function login(formData: FormData) {

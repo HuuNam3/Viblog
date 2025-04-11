@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { LogIn, LogOut, User } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 
 interface UserData {
@@ -20,7 +19,6 @@ export default function LoginButton() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-  const { toast } = useToast()
 
   // Check login status on component mount
   useEffect(() => {
@@ -57,27 +55,16 @@ export default function LoginButton() {
         setIsLoggedIn(false)
         setUserData(null)
 
-        toast({
-          title: "Logged out successfully",
-          description: "You have been logged out of your account.",
-        })
+    
 
         // Refresh the page to update the UI
         router.refresh()
       } else {
-        toast({
-          title: "Logout failed",
-          description: "There was an error logging out. Please try again.",
-          variant: "destructive",
-        })
+        
       }
     } catch (error) {
       console.error("Logout error:", error)
-      toast({
-        title: "Logout failed",
-        description: "There was an error logging out. Please try again.",
-        variant: "destructive",
-      })
+      
     }
   }
 

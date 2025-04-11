@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(filtered)
   } catch (error) {
-    console.error("Error in GET /api/posts:", error)
+    console.error("Error in GET /api/posts/search:", error)
     return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 })
   }
 }
