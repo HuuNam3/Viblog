@@ -1,8 +1,9 @@
+"use server"
 import { cookies } from "next/headers"
 import fs from "fs/promises"
 import path from "path"
 import { redirect } from "next/navigation"
-import crypto from "crypto"
+// import crypto from "crypto"
 
 // Define the User type
 export interface User {
@@ -11,14 +12,14 @@ export interface User {
   email: string
   password: string
   name: string
-  role: "admin" | "user"
+  role: string
   createdAt: string
 }
 
 // Function to get all users from the JSON file
 export async function getUsers(): Promise<User[]> {
   try {
-    const filePath = path.join(process.cwd(), "app/data/accounts.json")
+    const filePath = path.join(process.cwd(), "src/app/data/accounts.json")
     const data = await fs.readFile(filePath, "utf8")
     return JSON.parse(data)
   } catch (error) {
@@ -30,7 +31,7 @@ export async function getUsers(): Promise<User[]> {
 // Function to save users to the JSON file
 export async function saveUsers(users: User[]): Promise<void> {
   try {
-    const filePath = path.join(process.cwd(), "app/data/accounts.json")
+    const filePath = path.join(process.cwd(), "src/app/data/accounts.json")
     await fs.writeFile(filePath, JSON.stringify(users, null, 2), "utf8")
   } catch (error) {
     console.error("Error saving users:", error)
@@ -39,34 +40,35 @@ export async function saveUsers(users: User[]): Promise<void> {
 }
 
 // Function to hash a password
-export function hashPassword(password: string): string {
-  return crypto.createHash("sha256").update(password).digest("hex")
-}
+// export function hashPassword(password: string): string {
+//   return crypto.createHash("sha256").update(password).digest("hex")
+// }
 
 // Function to verify a password
-export function verifyPassword(password: string, hashedPassword: string): boolean {
-  const hashed = hashPassword(password)
-  return hashed === hashedPassword
-}
+// export function verifyPassword(password: string, hashedPassword: string): boolean {
+//   const hashed = hashPassword(password)
+//   return hashed === hashedPassword
+// }
 
 // Function to get the current user from the session
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = cookies()
-  const sessionId = cookieStore.get("sessionId")?.value
-
+  const sessionId = (await cookieStore).get("sessionId")?.value
   if (!sessionId) {
     return null
   }
 
   try {
+    const sessionData = JSON.parse(sessionId);
     const users = await getUsers()
-    const user = users.find((user) => hashPassword(user.id.toString()) === sessionId)
+    const user = users.find((u) => u.id === sessionData.id);
 
     if (!user) {
       return null
     }
 
     // Return user without password
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user
     return userWithoutPassword as User
   } catch (error) {
@@ -94,25 +96,27 @@ export async function requireAuth(redirectTo = "/login") {
 }
 
 // Function to create a session for a user
-export async function createSession(user: User): Promise<void> {
-  const cookieStore = cookies()
+// export async function createSession(user: User): Promise<void> {
+//   const cookieStore = cookies()
 
-  // Create a session ID based on the user ID (in a real app, use a more secure method)
-  const sessionId = hashPassword(user.id.toString())
+//   // Create a session ID based on the user ID (in a real app, use a more secure method)
+//   const sessionId = hashPassword(user.id.toString())
 
-  // Set the session cookie (expires in 24 hours)
-  cookieStore.set("sessionId", sessionId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24, // 24 hours
-    path: "/",
-  })
-}
+//   // Set the session cookie (expires in 24 hours)
+//   ;(await
+//     // Set the session cookie (expires in 24 hours)
+//     cookieStore).set("sessionId", sessionId, {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     maxAge: 60 * 60 * 24, // 24 hours
+//     path: "/",
+//   })
+// }
 
 // Function to clear the session
 export async function clearSession(): Promise<void> {
   const cookieStore = cookies()
-  cookieStore.delete("sessionId")
+  ;(await cookieStore).delete("sessionId")
 }
 
 // Function to find a user by username or email
@@ -147,8 +151,10 @@ export async function createUser(userData: Omit<User, "id" | "createdAt">): Prom
 
   // Save the updated users array
   await saveUsers(users)
+  
 
   // Return the new user without password
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...userWithoutPassword } = newUser
   return userWithoutPassword as User
 }

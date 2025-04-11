@@ -90,7 +90,7 @@ export default function LoginButton() {
           variant="outline"
           size="sm"
           onClick={handleLogout}
-          className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          className="flex items-center cursor-pointer gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
         >
           <LogOut className="h-4 w-4" />
           <span>Logout</span>

@@ -1,5 +1,4 @@
 "use server"
-
 import { NextResponse } from "next/server"
 import fs from "fs/promises"
 import path from "path"
@@ -37,3 +36,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 })
   }
 }
+
+// export async function POST(req: Request) {
+  
+// }
