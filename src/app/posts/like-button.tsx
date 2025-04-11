@@ -32,7 +32,7 @@ export default function LikeButton({numbers }: LikeButtonProps) {
     >
       <Heart className={`h-4 w-4 ${isLiked ? "fill-white" : ""}`} />
       <span>
-        {likes + numbers} {likes === 1 ? "Like" : "Likes"}
+        {likes + numbers} {"Likes"}
       </span>
     </Button>
   )

@@ -17,6 +17,7 @@ interface Post {
   author: string
   image: string
   content: string
+  like: number
 }
 
 // Function to get all posts from the JSON file
@@ -125,14 +126,14 @@ export default async function PostPage({ params }: PostPageProps) {
         </div>
 
         {/* Featured Image */}
-        <div className="relative w-full h-[400px] overflow-hidden rounded-xl shadow-lg mb-8">
+        <div className="relative w-full h-[50vh] mb-8 mt-2 rounded-xl">
           <Image
             src={post.image || "/placeholder.svg"}
             alt={`Featured image for ${post.title}`}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority
-            className="object-cover"
+            className="object-contain rounded-xl shadow-lg"
           />
         </div>
 
@@ -145,7 +146,7 @@ export default async function PostPage({ params }: PostPageProps) {
             <span className="text-sm text-gray-500">Post #{post.id}</span>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">Like this post?</span>
-              <LikeButton postId={post.id} />
+              <LikeButton numbers={post.like} />
             </div>
           </CardFooter>
         </Card>
