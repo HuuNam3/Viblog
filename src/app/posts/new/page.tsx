@@ -1,14 +1,12 @@
+"use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Sparkles, FileUp } from "lucide-react"
-import Link from "next/link"
-import { redirect } from "next/navigation"
-import fs from "fs/promises"
-import path from "path"
+import { Sparkles, FileUp } from "lucide-react"
 import { getCurrentUser, requireAuth } from "@/lib/auth"
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Define the Post type
 interface Post {
@@ -22,92 +20,70 @@ interface Post {
   content: string
 }
 
-// Function to get all posts from the JSON file
-async function getPosts(): Promise<Post[]> {
-  try {
-    const filePath = path.join(process.cwd(), "src/app/data/posts.json")
-    const data = await fs.readFile(filePath, "utf8")
-    return JSON.parse(data)
-  } catch (error) {
-    console.error("Error reading posts:", error)
-    return []
-  }
-}
-
-// Function to save posts to the JSON file
-async function savePosts(posts: Post[]): Promise<void> {
-  try {
-    const filePath = path.join(process.cwd(), "src/app/data/posts.json")
-    await fs.writeFile(filePath, JSON.stringify(posts, null, 2), "utf8")
-  } catch (error) {
-    console.error("Error saving posts:", error)
-    throw new Error("Failed to save post")
-  }
-}
-
-// Server Action to add a new post
-async function addPost(formData: FormData) {
-  "use server"
-
-  // Check if user is authenticated
-  const user = await getCurrentUser()
-  if (!user) {
-    throw new Error("You must be logged in to create a post")
-  }
-
-  // Extract form data
-  const title = formData.get("title") as string
-  const excerpt = formData.get("excerpt") as string
-  const image = formData.get("image") as string
-  const content = formData.get("content") as string
-
-  // Validate form data
-  if (!title || !excerpt || !image || !content) {
-    throw new Error("All fields are required")
-  }
-
-  try {
-    // Get existing posts
-    const posts = await getPosts()
-
-    // Generate a new ID (max ID + 1)
-    const newId = posts.length > 0 ? Math.max(...posts.map((post) => post.id)) + 1 : 1
-
-    // Format the current date
-    const date = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-
-    // Create the new post
-    const newPost: Post = {
-      id: newId,
-      title,
-      excerpt,
-      date,
-      author: user.name,
-      authorId: user.id,
-      image,
-      content,
-    }
-
-    // Add the new post to the array
-    posts.push(newPost)
-
-    // Save the updated posts array
-    await savePosts(posts)
-
-    // Redirect to the posts list
-    redirect("/posts")
-  } catch (error) {
-    console.error("Error adding post:", error)
-    throw new Error("Failed to add post")
-  }
-}
-
-export default async function NewPostPage() {
+export default function NewPostPage() {
   // Require authentication for this page
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const callbackUrl = searchParams?.get("callbackUrl") || "/posts";
+
+  async function addPost(formData: FormData) {
+    
+    // Check if user is authenticated
+    const user = await getCurrentUser()
+    if (!user) {
+      throw new Error("You must be logged in to create a post")
+    }
+  
+    // Extract form data
+    const title = formData.get("title") as string
+    const excerpt = formData.get("excerpt") as string
+    const image = formData.get("image") as string
+    const content = formData.get("content") as string
+  
+    // Validate form data
+    if (!title || !excerpt || !image || !content) {
+      throw new Error("All fields are required")
+    }
+  
+    try {
+      // Get existing posts
+      const posts = await getPosts()
+  
+      // Generate a new ID (max ID + 1)
+      const newId = posts.length > 0 ? Math.max(...posts.map((post) => post.id)) + 1 : 1
+  
+      // Format the current date
+      const date = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+  
+      // Create the new post
+      const newPost: Post = {
+        id: newId,
+        title,
+        excerpt,
+        date,
+        author: user.name,
+        authorId: user.id,
+        image,
+        content,
+      }
+  
+      // Add the new post to the array
+      posts.push(newPost)
+  
+      // Save the updated posts array
+      await savePosts(posts)
+  
+      // Redirect to the posts list
+      router.push(callbackUrl);
+    } catch (error) {
+      console.error("Error adding post:", error)
+      throw new Error("Failed to add post")
+    }
+  }
   await requireAuth()
 
   // Get the current user
@@ -115,13 +91,6 @@ export default async function NewPostPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Button variant="ghost" size="sm" asChild className="mb-6 hover:bg-purple-50 hover:text-purple-700">
-        <Link href="/posts" className="flex items-center gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Posts</span>
-        </Link>
-      </Button>
-
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
           <Sparkles className="h-4 w-4" />
