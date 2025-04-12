@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Viblog
 
-## Getting Started
+## Introduction
+Viblog is a blog platform designed to share experiences and insights related to technology and design. It provides a user-friendly space for readers to access valuable articles and stay updated with the latest trends in these fields.
 
-First, run the development server:
+**Project Status**: Viblog is currently in the experimental phase.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
+- **Article Sharing**: Publish and share blog posts focused on technology and design topics.
+- **Responsive Design**: Optimized for seamless viewing across desktop and mobile devices.
+- **Modern UI**: Built with Shadcn and Tailwind CSS for a customizable and visually appealing interface.
+- **Secure Authentication**: Implements Bcrypt for safe password hashing and user management.
+- **User Feedback**: Integrates Sonner for modern toast notifications to enhance user experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
+- **Next.js**: A React framework for high-performance web development.
+- **Shadcn**: Customizable UI component library.
+- **Lucide**: Lightweight and elegant icon library.
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI design.
+- **Sonner**: Modern toast notification library.
+- **Bcrypt**: Secure password hashing library.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation
+To run Viblog locally, follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/HuuNam3/Viblog.git
+   ```
+2. **Navigate to the project directory**:
+   ```bash
+   cd Viblog
+   ```
+3. **Install dependencies**:
+   Ensure you have Node.js installed. Then run:
+   ```bash
+   npm install
+   ```
+   This will install the required libraries, including:
+   - `next`
+   - `@shadcn/ui`
+   - `lucide-react`
+   - `tailwindcss`
+   - `sonner`
+   - `bcrypt`
 
-## Learn More
+4. **Set up environment variables** (if needed):
+   - Create a `.env.local` file in the root directory and add necessary environment variables (e.g., for authentication or external APIs).
+   - Example:
+     ```
+     NEXTAUTH_SECRET=your_secret_key
+     ```
 
-To learn more about Next.js, take a look at the following resources:
+5. **Run the project**:
+   ```bash
+   npm run dev
+   ```
+   The project will be available at `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
+[This section will be updated later as per your request.]
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
+Viblog is in its experimental stage. If you’re interested in contributing, please reach out via the contact information below to discuss ideas or suggestions.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contact
+- **Email**: nhnam4411@gmail.com
+- **GitHub**: [https://github.com/HuuNam3](https://github.com/HuuNam3)
