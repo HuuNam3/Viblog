@@ -48,24 +48,5 @@
     "author": "Robin Chen",
     "image": "/images/nextjs4.png",
     "content": "Next.js provides several ways to fetch data for your application. In this post, we'll explore the different data fetching strategies and when to use each one.\n\nServer Components: With React Server Components, you can fetch data directly in your component using async/await. This is a powerful pattern that allows you to keep your data fetching close to where the data is used.\n\n```tsx\nasync function PostList() {\n  const posts = await getPosts()\n  return (\n    <ul>\n      {posts.map((post) => (\n        <li key={post.id}>{post.title}</li>\n      ))}\n    </ul>\n  )\n}\n```\n\nRoute Handlers: Next.js also provides API Routes (in the pages directory) and Route Handlers (in the app directory) for creating API endpoints. These can be used to fetch data from external APIs or databases.\n\nServer Actions: For mutating data, you can use Server Actions, which allow you to define server-side functions that can be called from the client.\n\nChoosing the right data fetching strategy depends on your specific use case, including factors like whether the data needs to be fresh on every request, can be cached, or requires authentication."
-  },
-  {
-    "id": 6,
-    "title": "How to use figma",
-    "like": 10,
-    "excerpt": "Figma pro",
-    "date": "April 11, 2025",
-    "author": "Nam",
-    "image": "/placeholder.svg?height=600&width=1200",
-    "content": "you should buy figma pro"
-  },
-  {
-    "id": 7,
-    "title": "123",
-    "excerpt": "123",
-    "image": "/placeholder.svg?height=600&width=1200",
-    "content": "123",
-    "like": 0,
-    "author": "Nam"
   }
 ]

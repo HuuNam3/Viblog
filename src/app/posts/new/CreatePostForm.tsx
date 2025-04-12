@@ -32,7 +32,10 @@ type PostFormData = z.infer<typeof formSchema>;
 
 export default function CreatePostForm() {
   const [userId, setUserID] = useState<User>([]);
+  const [valueImg, setValueImg] = useState<string>("");
+  const [nameImg, setNameImg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [urlImg, setUrlImg] = useState<any>();
   const searchParams = useSearchParams();
   const router = useRouter();
   const callbackUrl = searchParams?.get("callbackUrl") || "/posts";
@@ -49,20 +52,31 @@ export default function CreatePostForm() {
     }
 
     checkLoginStatus()
-  }, [userId])
+  }, [])
+
+  const renderImg = (file: any) => {
+    const img = URL.createObjectURL(file[0])
+    setNameImg(file[0].name)
+    setUrlImg(img || "")
+  }
   
   const form = useForm<PostFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       excerpt: "",
-      image: "/placeholder.svg?height=600&width=1200",
+      image: "",
       content: "",
     },
   });
 
   const onSubmit = async (data: PostFormData) => {
     try {
+      data.image = valueImg
+      const link = document.createElement("a")
+      link.href = urlImg
+      link.download = nameImg
+      link.click();
       const date = new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -150,16 +164,26 @@ export default function CreatePostForm() {
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700">Image URL</FormLabel>
+                  <FormLabel className="text-gray-700">Image</FormLabel>
                   <FormControl>
                     <Input
+                      onChange={(e) => {
+                        const url = e?.currentTarget?.files[0].name || ""
+                        setValueImg("/images/" + url)
+                        renderImg(e.currentTarget.files)
+                      }}
                       placeholder="Enter image URL"
-                      {...field}
+                      type="file"
+                      accept=".jpg, .png"
                       className="border-gray-300 focus:border-purple-300 focus:ring-purple-500"
                     />
                   </FormControl>
                   <p className="text-sm text-gray-500">
-                    Enter a URL for the featured image. You can use placeholder.svg for testing.
+                    Please select format as .png .jpg
+                  </p>
+                  <img className="w-auto h-auto object-contain" src={urlImg}/>
+                  <p className="text-sm text-gray-500">
+                    Save Img in images /public/images
                   </p>
                   <FormMessage />
                 </FormItem>

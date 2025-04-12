@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import VideoPlayer from "./video-player";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Loading from "@/components/common/Loading";
 
 interface Video {
   id: number;
@@ -46,8 +47,14 @@ export default function VideoFeed() {
     }
   };
 
-  if (videos.length === 0) {
-    return <div>Loading videos...</div>;
+  if (videos.length !== 0) {
+    return (
+      <div className="h-screen w-full">
+        <div className="max-h-[20vh] m-auto">
+          <Loading/>
+        </div>
+      </div>
+    )
   }
 
   return (
