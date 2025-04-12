@@ -10,8 +10,6 @@ interface Video {
   videoUrl: string;
   username: string;
   caption: string;
-  likes: string;
-  userAvatar: string;
 }
 
 export default function VideoFeed() {
@@ -26,6 +24,7 @@ export default function VideoFeed() {
           throw new Error('Failed to fetch videos');
         }
         const data = await response.json();
+        console.log(data)
         setVideos(data);
       } catch (error) {
         console.error('Error fetching videos:', error);
@@ -47,9 +46,9 @@ export default function VideoFeed() {
     }
   };
 
-  if (videos.length !== 0) {
+  if (videos.length === 0) {
     return (
-      <div className="h-screen w-full">
+      <div className="h-screen w-full flex">
         <div className="max-h-[20vh] m-auto">
           <Loading/>
         </div>

@@ -1,12 +1,10 @@
-import Image from 'next/image';
+import { ShowMoreText } from '@/components/common/ShowMoreText';
 
 interface Video {
   id: number;
   videoUrl: string;
   username: string;
   caption: string;
-  likes: string;
-  userAvatar: string;
 }
 
 interface VideoPlayerProps {
@@ -18,6 +16,7 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
     <div className="relative w-full h-11/12 mt-2">
       {video.videoUrl ? (
         <video
+          key={video.id}
           width={720}
           height={405}
           controls
@@ -30,19 +29,14 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
         <p>No video available</p>
       )}
 
-      <div className="absolute bottom-4 left-4 right-4 text-white">
+      <div className="absolute bottom-16 left-4 right-4 text-white">
         <div className="flex items-center space-x-2">
-          <Image
-            src={video.userAvatar}
-            alt={video.username}
-            width={50}
-            height={50}
-            className="rounded-full"
-          />
+          <div className="w-8 h-8 max-h-8 max-w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-lg font-bold">
+            {video.username.charAt(0)}
+          </div>
           <div>
             <p className="font-bold">{video.username}</p>
-            <p>{video.caption}</p>
-            <p>Likes: {video.likes}</p>
+            <ShowMoreText text={video.caption} maxLength={40} className="max-w-[350px]" />
           </div>
         </div>
       </div>
