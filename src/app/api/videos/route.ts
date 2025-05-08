@@ -5,6 +5,7 @@ export async function GET() {
   try {
     const videos = await getVideos();
     return NextResponse.json(videos);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
   }

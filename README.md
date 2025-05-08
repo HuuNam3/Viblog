@@ -58,10 +58,24 @@ To run Viblog locally, follow these steps:
    The project will be available at `http://localhost:3000`.
 
 ## Usage
-[This section will be updated later as per your request.]
+**website home page**
+![home](public/images/home.jpg)
+
+**View blogs**
+![blog](public/images/blog.jpg)
+
+**create blogs**
+![post](public/images/post.jpg)
+
+**login**
+![login](public/images/login.jpg)
+
+**video**: This part is just a demo.
+![video](public/images/video.jpg)
 
 ## Contributing
-Viblog is in its experimental stage. If you’re interested in contributing, please reach out via the contact information below to discuss ideas or suggestions.
+I only prioritize the interface of this website so I haven't processed the backend yet. 
+I will do backend later when I have time
 
 ## Contact
 - **Email**: nhnam4411@gmail.com
