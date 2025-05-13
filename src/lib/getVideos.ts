@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-interface Video {
+export interface Video {
   id: number;
   videoUrl: string;
   username: string;

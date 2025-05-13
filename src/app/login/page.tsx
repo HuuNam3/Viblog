@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LogIn, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/common/Header";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -18,7 +19,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams(); // Sử dụng useSearchParams để truy cập searchParams
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
 
   const callbackUrl = searchParams?.get("callbackUrl") || "/posts";
 
@@ -26,8 +28,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
-    console.log("Data being sent:", { usernameOrEmail, password });
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -42,20 +42,18 @@ export default function LoginPage() {
       if (!res.ok) {
         toast.error("Login failed 😢", {
           description: data.message,
-        })
-        throw new Error(data.error || "Login failed");
-      }
-      if (res) {
-        toast.success("Login successful! 🎉", {
-          description: "You can now create posts.",
-        })
-      } else {
-        toast.error("Login failed 😢", {
-          description: "Please try again later.",
-        })
+        });
+        throw new Error(data.message || "Login failed");
       }
 
-      // Đăng nhập thành công, chuyển hướng người dùng
+      // Lưu thông tin user vào context
+      login(data.user);
+      
+      toast.success("Login successful! 🎉", {
+        description: "You can now create posts.",
+      });
+
+      // Chuyển hướng người dùng
       router.push(callbackUrl);
     } catch (err: any) {
       setError(err.message);
@@ -140,7 +138,7 @@ export default function LoginPage() {
       </main>
 
       <footer className="py-6 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Spectrum Blog. All rights reserved.
+        © {new Date().getFullYear()} Viblog. All rights reserved.
       </footer>
     </div>
   );

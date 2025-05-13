@@ -8,9 +8,18 @@ import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { Post, getPosts } from "@/lib/getPosts"
 import Loading from '@/components/common/Loading'
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface Props {
   query?: string
+}
+
+interface PaginationData {
+  currentPage: number
+  totalPages: number
+  totalPosts: number
+  postsPerPage: number
 }
 
 function getRandomCategory(postId: number) {
@@ -25,29 +34,9 @@ function getRandomCategory(postId: number) {
   return categories[postId % categories.length]
 }
 
-
-export default function RenderPosts( {query}: Props) {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
-  useEffect(() => {
-    const load = async () => {
-      const data = await getPosts(query);
-      setPosts(data);
-      setLoading(false)
-      console.log(data)
-    }
-
-    load()
-  }, [query])
-
-  return (
-    <div>
-      {loading ? (
-        <Loading/>
-      ) : (
-        <div className="grid gap-8">
-          {posts.map((post) => {
-            const category = getRandomCategory(post.id)
+const PostCard = React.memo(({ post }: { post: Post }) => {
+  const category = getRandomCategory(post.id)
+  
             return (
               <Card
                 key={post.id}
@@ -98,6 +87,9 @@ export default function RenderPosts( {query}: Props) {
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LS0yMi4qLjgyPy0/ODMuRkVHSUhKU1NTW1xfYGFXZF5LYF3/2wBDARUXFx4aHRweHV5EMiREXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFz/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                       />
                     </div>
                   </div>
@@ -129,8 +121,94 @@ export default function RenderPosts( {query}: Props) {
                 </CardFooter>
               </Card>
             )
-          })}
+})
+
+PostCard.displayName = 'PostCard'
+
+const Pagination = ({ pagination, onPageChange }: { 
+  pagination: PaginationData, 
+  onPageChange: (page: number) => void 
+}) => {
+  return (
+    <div className="flex justify-center items-center gap-4 mt-8">
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(pagination.currentPage - 1)}
+        disabled={pagination.currentPage === 1}
+      >
+        <ChevronLeft className="h-4 w-4" />
+        Previous
+      </Button>
+      
+      <span className="text-sm text-gray-600">
+        Page {pagination.currentPage} of {pagination.totalPages}
+      </span>
+      
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(pagination.currentPage + 1)}
+        disabled={pagination.currentPage === pagination.totalPages}
+      >
+        Next
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  )
+}
+
+export default function RenderPosts({ query }: Props) {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(true)
+  const [pagination, setPagination] = useState<PaginationData>({
+    currentPage: 1,
+    totalPages: 1,
+    totalPosts: 0,
+    postsPerPage: 5
+  })
+
+  const loadPosts = async (page: number) => {
+    try {
+      setLoading(true)
+      const url = query 
+        ? `/api/posts/search?q=${encodeURIComponent(query)}&page=${page}` 
+        : `/api/posts?page=${page}`
+      const res = await fetch(url)
+      if (!res.ok) throw new Error("Failed to fetch posts")
+      const data = await res.json()
+      setPosts(data.posts)
+      setPagination(data.pagination)
+    } catch (error) {
+      console.error("Error loading posts:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadPosts(1)
+  }, [query])
+
+  const handlePageChange = (page: number) => {
+    loadPosts(page)
+  }
+
+  return (
+    <div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="grid gap-8">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
         </div>
+          
+          <Pagination 
+            pagination={pagination} 
+            onPageChange={handlePageChange} 
+          />
+        </>
       )}
     </div>
   )  

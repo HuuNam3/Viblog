@@ -1,67 +1,70 @@
 "use server"
 import { NextResponse } from "next/server"
-import fs from "fs/promises"
-import fs1 from "fs"
-import path from "path"
-import {Post} from "@/lib/getPosts"
+import { ApiHandler } from "@/lib/api-handler"
+import { Post } from "@/types/post"
 
-async function readPosts(): Promise<Post[]> {
-  try {
-    const filePath = path.join(process.cwd(), "src/app/data/posts.json")
-    const data = await fs.readFile(filePath, "utf8")
-    return JSON.parse(data)
-  } catch (error) {
-    console.error("Error reading posts:", error)
-    return []
-  }
-}
+const POSTS_PER_PAGE = 5
+const POSTS_FILE_PATH = "src/app/data/posts.json"
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const q = searchParams.get("q")?.toLowerCase().trim()
+  const { searchParams } = new URL(request.url)
+  const page = parseInt(searchParams.get('page') || '1')
 
-    const posts = await readPosts()
-
-    if (!q) {
-      return NextResponse.json(posts)
+  const response = await ApiHandler.handleGet<Post>(POSTS_FILE_PATH, {
+    pagination: {
+      page,
+      limit: POSTS_PER_PAGE
     }
+  })
 
-    const filtered = posts.filter(post =>
-      `${post.title} ${post.excerpt} ${post.content} ${post.author}`.toLowerCase().includes(q)
-    )
+  // Get the response data
+  const responseData = await response.json()
 
-    return NextResponse.json(filtered)
-  } catch (error) {
-    console.error("Error in GET /api/posts:", error)
-    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 })
-  }
+  // Restructure the response to match what the component expects
+  return NextResponse.json({
+    posts: responseData.data.items,
+    pagination: {
+      currentPage: responseData.data.pagination.currentPage,
+      totalPages: responseData.data.pagination.totalPages,
+      totalPosts: responseData.data.pagination.totalItems,
+      postsPerPage: responseData.data.pagination.itemsPerPage
+    }
+  })
 }
 
-export async function POST(req: Request) {
-  try {
-    const data = await req.json()
+export async function POST(request: Request) {
+  const data = await request.json()
+  
+  return ApiHandler.handlePost<Post>(POSTS_FILE_PATH, data, {
+    validate: (data) => {
+      if (!data.title) return "Title is required"
+      if (!data.content) return "Content is required"
+      return true
+    },
+    transform: (post) => ({
+      ...post,
+      date: new Date().toLocaleDateString()
+    })
+  })
+}
 
-    // Đường dẫn tuyệt đối đến file JSON
-    const filePath = path.join(process.cwd(), "src/app/data/posts.json")
+export async function PUT(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const id = parseInt(searchParams.get('id') || '')
+  const data = await request.json()
 
-    // Đọc dữ liệu cũ
-    const fileData = fs1.readFileSync(filePath, "utf-8")
-    const contacts = JSON.parse(fileData)
+  return ApiHandler.handlePut<Post>(POSTS_FILE_PATH, id, data, {
+    validate: (data) => {
+      if (data.title === "") return "Title cannot be empty"
+      if (data.content === "") return "Content cannot be empty"
+      return true
+    }
+  })
+}
 
-    // Tạo id mới
-    const newId = contacts.length > 0 ? contacts[contacts.length - 1].id + 1 : 1
-    const newContact = { id: newId, ...data }
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const id = parseInt(searchParams.get('id') || '')
 
-    // Thêm vào danh sách
-    contacts.push(newContact)
-
-    // Ghi lại vào file JSON
-    fs1.writeFileSync(filePath, JSON.stringify(contacts, null, 2))
-
-    return NextResponse.json({ message: "Success", contact: newContact }, { status: 200 })
-  } catch (error) {
-    console.error("Error saving contact:", error)
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
-  }
+  return ApiHandler.handleDelete<Post>(POSTS_FILE_PATH, id)
 }

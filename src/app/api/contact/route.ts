@@ -1,31 +1,29 @@
-import { NextResponse } from "next/server"
-import fs from "fs"
-import path from "path"
+import { ApiHandler } from "@/lib/api-handler"
+import { Contact } from "@/types/contact"
 
-export async function POST(req: Request) {
-  try {
-    const data = await req.json()
+const CONTACTS_FILE_PATH = "src/app/data/contacts.json"
 
-    // Đường dẫn tuyệt đối đến file JSON
-    const filePath = path.join(process.cwd(), "src/app/data/contacts.json")
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const page = parseInt(searchParams.get('page') || '1')
+  
+  return ApiHandler.handleGet<Contact>(CONTACTS_FILE_PATH, {
+    pagination: {
+      page,
+      limit: 10
+    }
+  })
+}
 
-    // Đọc dữ liệu cũ
-    const fileData = fs.readFileSync(filePath, "utf-8")
-    const contacts = JSON.parse(fileData)
-
-    // Tạo id mới
-    const newId = contacts.length > 0 ? contacts[contacts.length - 1].id + 1 : 1
-    const newContact = { id: newId, ...data }
-
-    // Thêm vào danh sách
-    contacts.push(newContact)
-
-    // Ghi lại vào file JSON
-    fs.writeFileSync(filePath, JSON.stringify(contacts, null, 2))
-
-    return NextResponse.json({ message: "Success", contact: newContact }, { status: 200 })
-  } catch (error) {
-    console.error("Error saving contact:", error)
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
-  }
+export async function POST(request: Request) {
+  const data = await request.json()
+  
+  return ApiHandler.handlePost<Contact>(CONTACTS_FILE_PATH, data, {
+    validate: (data) => {
+      if (!data.name) return "Name is required"
+      if (!data.email) return "Email is required"
+      if (!data.message) return "Message is required"
+      return true
+    }
+  })
 }
