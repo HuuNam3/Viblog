@@ -1,12 +1,13 @@
 import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Home, FileText, Info, Search, Sparkles,Film } from "lucide-react"
+import { Home, FileText, Info, Search, Sparkles, Film } from "lucide-react"
 import LoginButton from "./LoginButton"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Header() {
   return (
-    <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+    <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center">
@@ -24,7 +25,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-gray-700 hover:text-purple-700 hover:bg-purple-50"
+                className="text-foreground hover:text-purple-700 hover:bg-purple-50"
                 >
                 <Link href="/" className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
@@ -35,7 +36,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-gray-700 hover:text-purple-700 hover:bg-purple-50"
+                className="text-foreground hover:text-purple-700 hover:bg-purple-50"
                 >
                 <Link href="/posts" className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
@@ -46,7 +47,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-gray-700 hover:text-purple-700 hover:bg-purple-50"
+                className="text-foreground hover:text-purple-700 hover:bg-purple-50"
                 >
                 <Link href="/short" className="flex items-center gap-2">
                     <Film className="h-4 w-4" />
@@ -57,7 +58,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-gray-700 hover:text-purple-700 hover:bg-purple-50"
+                className="text-foreground hover:text-purple-700 hover:bg-purple-50"
                 >
                 <Link href="/posts/search" className="flex items-center gap-2">
                     <Search className="h-4 w-4" />
@@ -68,13 +69,14 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-gray-700 hover:text-purple-700 hover:bg-purple-50"
+                className="text-foreground hover:text-purple-700 hover:bg-purple-50"
                 >
                 <Link href="/about" className="flex items-center gap-2">
                     <Info className="h-4 w-4" />
                     <span>About</span>
                 </Link>
                 </Button>
+                <ThemeToggle />
                 <LoginButton />
             </div>
             </nav>
