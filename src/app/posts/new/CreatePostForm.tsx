@@ -31,11 +31,11 @@ const formSchema = z.object({
 type PostFormData = z.infer<typeof formSchema>;
 
 export default function CreatePostForm() {
-  const [userId, setUserID] = useState<User>([]);
+  const [userId, setUserID] = useState<User | null>(null);
   const [valueImg, setValueImg] = useState<string>("");
   const [nameImg, setNameImg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [urlImg, setUrlImg] = useState<any>();
+  const [urlImg, setUrlImg] = useState<string>("");
   const searchParams = useSearchParams();
   const router = useRouter();
   const callbackUrl = searchParams?.get("callbackUrl") || "/posts";
@@ -44,7 +44,7 @@ export default function CreatePostForm() {
     async function checkLoginStatus() {
       try {
         const user = await getCurrentUser()
-        setUserID(user || [])
+        setUserID(user || null)
         setLoading(false)
       } catch (error) {
         console.error("Error checking login status:", error)
@@ -54,11 +54,36 @@ export default function CreatePostForm() {
     checkLoginStatus()
   }, [])
 
-  const renderImg = (file: any) => {
-    const img = URL.createObjectURL(file[0])
-    setNameImg(file[0].name)
-    setUrlImg(img || "")
-  }
+  const handleImageUpload = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('filename', file.name);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      return data.path;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+
+  const renderImg = (file: FileList | null) => {
+    if (file && file.length > 0) {
+      const img = URL.createObjectURL(file[0]);
+      setNameImg(file[0].name);
+      setUrlImg(img);
+    }
+  };
   
   const form = useForm<PostFormData>({
     resolver: zodResolver(formSchema),
@@ -72,23 +97,30 @@ export default function CreatePostForm() {
 
   const onSubmit = async (data: PostFormData) => {
     try {
-      data.image = valueImg
-      const link = document.createElement("a")
-      link.href = urlImg
-      link.download = nameImg
-      link.click();
+      let imagePath = valueImg;
+      
+      // Xử lý upload hình ảnh nếu có
+      if (urlImg) {
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput?.files?.[0]) {
+          imagePath = await handleImageUpload(fileInput.files[0]);
+        }
+      }
+
       const date = new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
-      })
+      });
+
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
+          image: imagePath,
           like: 0,
-          author: userId.name,
+          author: userId?.name || "Anonymous",
           date,
         }),
       });
@@ -100,6 +132,9 @@ export default function CreatePostForm() {
           description: "Your post has been published.",
         });
         form.reset();
+        setUrlImg("");
+        setValueImg("");
+        setNameImg("");
       } else {
         toast.error("Something went wrong 😢", {
           description: responseData.message || "Please try again later.",
@@ -168,9 +203,12 @@ export default function CreatePostForm() {
                   <FormControl>
                     <Input
                       onChange={(e) => {
-                        const url = e?.currentTarget?.files[0].name || ""
-                        setValueImg("/images/" + url)
-                        renderImg(e.currentTarget.files)
+                        const files = e.currentTarget.files;
+                        if (files && files.length > 0) {
+                          const url = files[0].name;
+                          setValueImg("/images/" + url);
+                          renderImg(files);
+                        }
                       }}
                       placeholder="Enter image URL"
                       type="file"
@@ -181,9 +219,9 @@ export default function CreatePostForm() {
                   <p className="text-sm text-gray-500">
                     Please select format as .png .jpg
                   </p>
-                  <img className="w-auto h-auto object-contain" src={urlImg}/>
+                  {urlImg && <img className="w-auto h-auto object-contain" src={urlImg} alt="Preview"/>}
                   <p className="text-sm text-gray-500">
-                    Save Img in images /public/images
+                    Image will be saved in public/images with auto-generated name
                   </p>
                   <FormMessage />
                 </FormItem>
